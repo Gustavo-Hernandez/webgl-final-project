@@ -1,4 +1,4 @@
-let scene, camera, renderer, sun, spaceship;
+let scene, camera, renderer, sun, spaceship, asteroid;
 let t;
 function init() {
   scene = new THREE.Scene();
@@ -59,10 +59,11 @@ function init() {
         child.material.map = asteroidTexture;
       }
     });
-    object.position.x = -10;
-    object.position.y = 3;
-    object.position.z = -10;
-    scene.add(object);
+    object.position.x = -30;
+    object.position.y = 15;
+    object.position.z = -15;
+    asteroid = object;
+    scene.add(asteroid);
   });
 
   //Sun model creation.
@@ -74,13 +75,41 @@ function init() {
   scene.add(light);
 }
 
+let asteroidVectorA = [0.05,-0.05];
+let flip = true;
+
 //Create loop to render the scene everytime screen is refreshed.
 function animate() {
   requestAnimationFrame(animate);
-  sun.rotation.y += 0.01;
 
   //Increase time.
   t += 0.01;
+
+  sun.rotation.y += 0.01;
+
+  if(asteroid){
+    asteroid.rotation.x += 0.01
+    asteroid.position.x += asteroidVectorA[0];
+    asteroid.position.y += asteroidVectorA[1];
+    if(flip){
+      if(asteroid.position.x >= 30 || asteroid.position.y <= -15){
+        flip = false;
+        asteroid.position.x = 30;
+        asteroid.position.y = 15;
+        asteroidVectorA[0] = -((Math.random()/10)+0.1);
+        asteroidVectorA[1] = -((Math.random()/10)+0.03);
+      }
+    }
+    else{
+      if(asteroid.position.x <= -30 || asteroid.position.y <= -15){
+        flip = true;
+        asteroid.position.x = -30;
+        asteroid.position.y = 15;
+        asteroidVectorA[0] = ((Math.random()/10)+0.1);
+        asteroidVectorA[1] = -((Math.random()/10)+0.03);
+      }
+    }
+  }
 
   //Apply sin(t) function to position in order to create an animation.
   if (spaceship) {
