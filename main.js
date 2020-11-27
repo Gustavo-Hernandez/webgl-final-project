@@ -1,4 +1,4 @@
-let scene, camera, renderer, sun, spaceship, asteroid;
+let scene, camera, renderer, sun, spaceship, asteroid, asteroidB;
 let t;
 function init() {
   scene = new THREE.Scene();
@@ -63,7 +63,12 @@ function init() {
     object.position.y = 15;
     object.position.z = -15;
     asteroid = object;
+    asteroidB = object.clone();
+    asteroidB.position.x = 30;
+    asteroidB.position.y = 15;
+    asteroidB.position.z = -15;
     scene.add(asteroid);
+    scene.add(asteroidB);
   });
 
   //Sun model creation.
@@ -76,7 +81,9 @@ function init() {
 }
 
 let asteroidVectorA = [0.05,-0.05];
+let asteroidVectorB = [-0.05,-0.05];
 let flip = true;
+let flipB = false;
 
 //Create loop to render the scene everytime screen is refreshed.
 function animate() {
@@ -87,6 +94,7 @@ function animate() {
 
   sun.rotation.y += 0.01;
 
+  //Motion for Asteroid that randomly alters the motion vector and changes the spawn of the asteroid form side to side of the screen
   if(asteroid){
     asteroid.rotation.x += 0.01
     asteroid.position.x += asteroidVectorA[0];
@@ -107,6 +115,30 @@ function animate() {
         asteroid.position.y = 15;
         asteroidVectorA[0] = ((Math.random()/10)+0.1);
         asteroidVectorA[1] = -((Math.random()/10)+0.03);
+      }
+    }
+  }
+
+  if(asteroidB){
+    asteroidB.rotation.y += 0.01
+    asteroidB.position.x += asteroidVectorB[0];
+    asteroidB.position.y += asteroidVectorB[1];
+    if(flipB){
+      if(asteroidB.position.x >= 30 || asteroidB.position.y <= -15){
+        flipB = false;
+        asteroidB.position.x = 30;
+        asteroidB.position.y = 15;
+        asteroidVectorB[0] = -((Math.random()/10)+0.1);
+        asteroidVectorB[1] = -((Math.random()/10)+0.03);
+      }
+    }
+    else{
+      if(asteroidB.position.x <= -30 || asteroidB.position.y <= -15){
+        flipB = true;
+        asteroidB.position.x = -30;
+        asteroidB.position.y = 15;
+        asteroidVectorB[0] = ((Math.random()/10)+0.1);
+        asteroidVectorB[1] = -((Math.random()/10)+0.03);
       }
     }
   }
